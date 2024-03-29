@@ -32,8 +32,6 @@ ws.onmessage = function (evt) {
     $item.innerHTML = `<i>${msg.text}</i>`;
   } else if (msg.type === "chat") {
     $item.innerHTML = `<b>${msg.name}: </b>${msg.text}`;
-  } else if (msg.type === "get-joke") {
-    $item.innerHTML = `<b>A joke!</b>`;
   } else {
     return console.error(`bad message: ${msg}`);
   }
@@ -59,32 +57,17 @@ ws.onclose = function (evt) {
 /** send message when button pushed. */
 function sendMessage(evt) {
   evt.preventDefault();
+  let data;
+    let text = document.querySelector("#m").value;
 
-  let data = { type: "chat", text: document.querySelector("#m").value };
-  ws.send(JSON.stringify(data));
+    if (text === "/joke") {
+      data = { type: "get-joke", text};
+    } else {
+      data = { type: "chat", text: document.querySelector("#m").value };
+    }
+    ws.send(JSON.stringify(data));
 
-  document.querySelector("#m").value = "";
-}
-
-
-// function sendMessage(evt) {
-//   evt.preventDefault();
-
-//   let data;
-//   let text = document.querySelector("#m").value;
-
-//   if (text === "/joke") {
-//     console.log("joke!");
-
-//     data = { type: "get-joke", text: "joke" };
-//   } else {
-//     data = { type: "chat", text: document.querySelector("#m").value };
-//   }
-//   ws.send(JSON.stringify(data));
-
-//   document.querySelector("#m").value = "";
-// }
-
-
+    document.querySelector("#m").value = "";
+  }
 
 document.querySelector("form").addEventListener("submit", sendMessage);
